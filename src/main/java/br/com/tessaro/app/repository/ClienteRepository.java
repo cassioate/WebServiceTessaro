@@ -1,5 +1,5 @@
 package br.com.tessaro.app.repository;
 
-public interface CategoriaRepository {
+public interface ClienteRepository {
 
 }

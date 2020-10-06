@@ -5,32 +5,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-public class Categoria implements Serializable{
+public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nome;
 	private Double preco;
-	
-	@JsonIgnore
-	@ManyToMany(mappedBy = "categorias")
-	private List<Produto> produtos = new ArrayList<>();
-	
-	public Categoria() {
-		
+
+	@ManyToMany
+	@JoinTable
+	(name = "PRODUTO_CATEGORIA", 
+		joinColumns = @JoinColumn(name = "PRODUTO_ID"),
+		inverseJoinColumns =  @JoinColumn(name = "CATEGORIA_ID")
+	)
+	private List<Categoria> categorias = new ArrayList<>();
+
+	public Produto() {
+
 	}
-	
-	public Categoria(Long id, String nome, Double preco) {
+
+	public Produto(Long id, String nome, Double preco) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -65,6 +66,7 @@ public class Categoria implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((categorias == null) ? 0 : categorias.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -77,7 +79,12 @@ public class Categoria implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Produto other = (Produto) obj;
+		if (categorias == null) {
+			if (other.categorias != null)
+				return false;
+		} else if (!categorias.equals(other.categorias))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
